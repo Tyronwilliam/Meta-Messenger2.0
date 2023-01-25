@@ -22,9 +22,9 @@ function ChatInput({ sessions }: Props) {
       id,
       message: messageToSend,
       created_at: Date.now(),
-      username: sessions?.user?.name || "JohnDoe",
+      username: sessions?.user?.name,
       profilePic: sessions?.user?.image,
-      email: sessions?.user?.email || "frenchwebdeveloper@gmail.com",
+      email: sessions?.user?.email,
     };
     const uplodMessageToUpstash = async () => {
       const res = await fetch("/api/addMessage", {
