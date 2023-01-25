@@ -10,6 +10,7 @@ export default async function RootLayout({
     <html>
       <body>
         <Header />
+
         {children}
       </body>
     </html>
