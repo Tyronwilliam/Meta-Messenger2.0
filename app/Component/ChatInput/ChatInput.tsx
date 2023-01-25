@@ -5,27 +5,32 @@ import { Message } from "../../../typing";
 import useSWR from "swr";
 import fetcher from "../../../utils/fetchMessages";
 import { unstable_getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 
 type Props = {
   sessions: Awaited<ReturnType<typeof unstable_getServerSession>>;
 };
-function ChatInput({ sessions }: Props) {
+function ChatInput({}: Props) {
   const [input, setInput] = useState("");
   const { data: messages, error, mutate } = useSWR("/api/getMessages", fetcher);
+  const { data: sessions } = useSession();
+
   const addMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input || !sessions) return;
     const messageToSend = input;
     setInput("");
     const id = uuid();
+
     const message: Message = {
       id,
       message: messageToSend,
       created_at: Date.now(),
-      username: sessions?.user?.name,
-      profilePic: sessions?.user?.image,
-      email: sessions?.user?.email,
+      username: sessions?.user?.name || "John",
+      profilePic: sessions?.user?.image || "John",
+      email: sessions?.user?.email || "John",
     };
+
     const uplodMessageToUpstash = async () => {
       const res = await fetch("/api/addMessage", {
         method: "POST",
